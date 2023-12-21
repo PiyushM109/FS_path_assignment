@@ -18,8 +18,10 @@ function handleFirstrequest(req, res) {
 
     
         var calculatedSum = Calculatesum(counter);
+        var Calculatedmul = Calculatemul(counter);
         var ansObject ={
-            sum : `the sum of 1 to 100 is ${calculatedSum}`
+            sum : calculatedSum,
+            mul : Calculatedmul
         } 
         res.send(ansObject);
     
@@ -39,6 +41,13 @@ function Calculatesum(counter) {
         sum = sum + i;
     }
     return sum;
+}
+function Calculatemul(counter) {
+    let mul = 1;
+    for (let i = 1; i <= counter; i++) {
+        mul = mul * i;
+    }
+    return mul;
 }
 
 
