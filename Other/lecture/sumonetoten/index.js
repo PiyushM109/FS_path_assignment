@@ -14,20 +14,17 @@ app.use(bodyParser.json());
 // app.use(middleware1);
 
 function handleFirstrequest(req, res) {
-    var counter = req.body.counter;
-
+    var counter = req.query.counter;
+    var calculatedSum = Calculatesum(counter);
     
-        var calculatedSum = Calculatesum(counter);
-        var Calculatedmul = Calculatemul(counter);
-        var ansObject ={
-            sum : calculatedSum,
-            mul : Calculatedmul
-        } 
-        res.send(ansObject);
-    
+    var ansObject = {
+        sum: calculatedSum,
+        
+    }
+    res.send(ansObject);
 }
-// app.get('/handleSum', handleFirstrequest);
-app.post('/handleSum', handleFirstrequest);
+
+app.get('/handleSum', handleFirstrequest);
 
 function started() {
     console.log(`Example app listening on port ${port}`);
@@ -42,13 +39,13 @@ function Calculatesum(counter) {
     }
     return sum;
 }
-function Calculatemul(counter) {
-    let mul = 1;
-    for (let i = 1; i <= counter; i++) {
-        mul = mul * i;
-    }
-    return mul;
-}
+// function Calculatemul(counter) {
+//     let mul = 1;
+//     for (let i = 1; i <= counter; i++) {
+//         mul = mul * i;
+//     }
+//     return mul;
+// }
 
 
 // console.log(calculatedSum);
