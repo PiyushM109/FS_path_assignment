@@ -2,9 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const fs = require("fs");
-const path = require("path")
+const path = require("path");
+const { v4: uuidv4 } = require('uuid');
+const cors = require("cors");
+app.use(cors());
 
-let todos
+
+let todos = [];
 
 fs.readFile("todos.json", {encoding: "utf-8"}, (err, data) => {
   if (err) throw new Error(err)
@@ -21,25 +25,25 @@ function writeTodos(todos){
 
 app.use(bodyParser.json())
 
-let id = 0
+let id = Math.floor(Math.random() * 1000000);
 
-function createTODO(title, completed, description){
+app.post('/todos', (req, res) => {
+  let { title, completed, description } = req.body;
+  id += 1;
+  createTODO(id, title, completed, description);
+  res.status(201).send({ id: id, title: title, description: description });
+});
+
+function createTODO(id, title, completed, description) {
   let todo = {
     id: id,
     title: title,
     completed: completed,
     description: description
-  }
-  todos.push(todo)
-  writeTodos(todos)
+  };
+  todos.push(todo);
+  writeTodos(todos);
 }
-
-app.post('/todos', (req, res) => {
-  let {title, completed, description} = req.body
-  id += 1
-  createTODO(title, completed, description)
-  res.status(201).send({id: id, title:title, description: description})
-})
 
 app.get('/todos', (req, res) => {
   res.json(todos)
