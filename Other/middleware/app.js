@@ -1,5 +1,6 @@
 const express = require('express')
-const app = express()
+const app = express();
+const ExpressError = require("./express_error.js")
 
 
 const port = 3000;
@@ -28,9 +29,18 @@ app.use("/api",(req,res,next)=>{
     res.send("ACCESS DENIED!");
 })
 
+app.use("/cost",(err,req,res,next)=>{
+    console.log(err);
+    next();
+})
+
 app.get("/api",(req,res)=>{
     res.send("data");
-})
+});
+
+app.emit("/admin",(req,res)=>{
+    throw new ExpressError(403,"Access to this content is forbidden")
+});
 
 
 
