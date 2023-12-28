@@ -7,7 +7,7 @@ app.use(express.json());
 const secretKey = "Virat_kohli"
 const port = 3000;
 
-let course = [];
+let courses = [];
 let admins = [];
 let users = [];
 
@@ -56,9 +56,29 @@ app.post('/admin/login', (req, res) => {
     }
 });
 
+
 app.post("/admin/courses",authenticateJwt,(req,res)=>{
-    let {title,description,price,imagelink,published} = req.body;
-    console.log(title); 
+    let course = req.body;
+    course.id = courses.length+1;
+    let isPresent = courses.some(c => c.title==course.title);
+    if(isPresent){
+        res.json({ message: "Course already available" });
+    }else{
+        courses.push(course);
+        res.json({ message: 'Course created successfully', courseId: course.id })
+    }
+})
+
+app.put("/admin/courses/:courseId",authenticateJwt,(req,res)=>{
+    let id = req.params.courseId;
+    let updated = req.body;
+    updated.id = Number(id);
+    courses[id-1] = updated;
+    res.json({ message: 'Course updated successfully' });
+})
+
+app.get("/admin/courses",authenticateJwt,(req,res)=>{
+    res.send(courses);
 })
 
 
