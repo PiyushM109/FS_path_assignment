@@ -5,82 +5,58 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json());
 
-let admin = [
-    { username: 'admin', password: 'pass'},
-    { username: 'piyush', password: 'pass'},
-];
-let course = [
-    {
-        id: 1,
-        title: 'cohort2',
-        description: 'course description',
-        price: 'course price',
-        imagelink: 'image link',
-        published: 'true'
-    },
-    {
-        id: 2,
-        title: 'cohort1',
-        description: 'description',
-        price: 'price',
-        imagelink: 'image link',
-        published: 'true'
-    },
-    {
-        id: 3,
-        title: 'Delta',
-        description: 'web development',
-        price: '4000',
-        imagelink: 'link',
-        published: 'true'
-    },
-    {
-        id: 4,
-        title: 'cohort 1to100',
-        description: 'web development',
-        price: '4000',
-        imagelink: 'link',
-        published: 'true'
+let admin = [];
+let course = [];
+let user = []
+
+const adminauthenticator = (req, res, next) => {
+    let { username, password } = req.body;
+    let isAdmin = admin.find(admin => admin.username === username && admin.password == password);
+    if (isAdmin) {
+        next();
+    } else {
+        res.send(401).json({ message: "invalid credentials" });
     }
-];
-let user = [
-    { username: 'piyush', password: 'pass' ,  courses : []},
-    { username: 'user1', password: 'pass',  courses : [] },
-    { username: 'user2', password: 'pass',  courses : [] }
-]
+}
+
+const userauthenticator = (req, res, next) => {
+    const { username, password } = req.headers
+    const isUser = user.find(user => user.username === username && user.password === password)
+    if (isUser) {
+        next()
+    } else {
+        res.status(401).json({ message: 'Invalid credentials' })
+    }
+}
 
 app.post("/admin/signup", (req, res) => {
     let { username, password } = req.body;
     let isPresent = admin.some(admin => admin.username === username);
     if (isPresent) {
-        res.send("You already have an account");
+        res.status(403).json({ message: 'Admin already exists' })
     } else {
         let newobj = {
             username: username,
             password: password,
-            courses : [],
+            courses: [],
         }
         admin.push(newobj);
         console.log(admin);
-        res.send("Admin created successfully")
+        res.json({ message: 'Admin created successfully' })
     }
 });
 
-app.post("/admin/login", (req, res) => {
-    let { username, password } = req.headers;
-    let isPresent = admin.some(admin => admin.username === username && admin.password === password);
-    if (isPresent) {
-        res.send('Logged in successfully');
-    } else {
-        res.send("username or password not found");
-    }
+app.post("/admin/login", adminauthenticator, (req, res) => {
+    res.json({ message: 'Logged in successfully' })
 });
 
-app.post("/admin/courses", (req, res) => {
-    let { username, password } = req.headers;
-    let isPresent = admin.some(admin => admin.username === username && admin.password === password);
+app.post("/admin/courses", adminauthenticator, (req, res) => {
+    let { title, description, price, imagelink, published } = req.body;
+    let isPresent = course.find(c => c.name === title);
     if (isPresent) {
-        let { title, description, price, imagelink, published } = req.body;
+        res.status(403).json({ message: 'Course already exists' })
+    }
+    else {
         let id = course.length + 1;
         let newobj = {
             id: id,
@@ -94,15 +70,12 @@ app.post("/admin/courses", (req, res) => {
         console.log(course);
         res.send(`Course created successfully, CourseId: ${id}`);
     }
-    else {
-        res.send("Please login first");
-    }
+
 });
 
-app.put("/admin/courses/:id", (req, res) => {
-    let { username, password } = req.headers;
+app.put("/admin/courses/:id", adminauthenticator, (req, res) => {
     let id = req.params.id;
-    let isPresent = admin.some(admin => admin.username === username && admin.password === password);
+    const isPresent = course.find(c => c.id === id)
     if (isPresent) {
         let index = id - 1;
         console.group(index);
@@ -114,22 +87,14 @@ app.put("/admin/courses/:id", (req, res) => {
         course[index].published = published;
         console.log(course[index]);
         res.send(course[index]);
+    } else {
+        res.status(404).json({ message: 'Course not found' })
     }
-    else {
-        res.send("Please login first");
-    }
+
 });
 
-app.get("/admin/course", (req, res) => {
-    let { username, password } = req.headers;
-    let id = req.params.id;
-    let isPresent = admin.some(admin => admin.username === username && admin.password === password);
-    if (isPresent) {
-        res.send(course);
-    }
-    else {
-        res.send("Please login first");
-    }
+app.get("/admin/course", adminauthenticator, (req, res) => {
+    res.json({ courses: course });
 });
 
 app.get("/", (req, res) => {
@@ -140,7 +105,7 @@ app.post("/users/signup", (req, res) => {
     let { username, password } = req.body;
     let isPresent = user.some(user => user.username === username);
     if (isPresent) {
-        res.send("You already have an account");
+        res.status(403).json({ message: 'User already exists' })
     } else {
         let newobj = {
             username: username,
@@ -148,57 +113,38 @@ app.post("/users/signup", (req, res) => {
         }
         user.push(newobj);
         console.log(user);
-        res.send("User created successfully")
+        res.json({ message: 'User created successfully' })
     }
 });
-app.post("/users/login", (req, res) => {
-    let { username, password } = req.headers;
-    let isPresent = user.some(user => user.username === username && user.password==password);
-    if (isPresent) {
-        res.send("Logged in successfully");
-    } else {
-        res.send("invalid credentials")
-    }
+app.post("/users/login", userauthenticator, (req, res) => {
+    res.json({ message: 'Logged in successfully' })
 });
 
-app.get("/users/courses",(req,res)=>{
-    let { username, password } = req.headers;
-    let isPresent = user.some(user => user.username === username && user.password==password);
-    if (isPresent) {
-        res.send(course);
-    } else {
-        res.send("invalid credentials")
-    }
+app.get("/users/courses", userauthenticator, (req, res) => {
+    res.json({ courses: course.filter(c => c.published) })
 });
 
-app.post("/users/courses/:CourseId",(req,res)=>{
+app.post("/users/courses/:CourseId", userauthenticator, (req, res) => {
     let { username, password } = req.headers;
     let id = req.params.CourseId;
-    let isPresent = user.some(user => user.username === username && user.password==password);
-    if (isPresent) {
+    const iscourse = course.find(c => c.id === id && c.published)
+    if (iscourse) {
         let foundUser = user.find(user => user.username === username && user.password === password);
         // console.log(foundUser);
-        foundUser['courses'].push(course[id-1]);
-        res.send('Course purchased successfully');
+        foundUser['courses'].push(course[id - 1]);
+        res.json({ message: 'Course purchased successfully' })
     } else {
-        res.send("invalid credentials")
+        res.status(404).json({ message: 'Course not found' })
     }
 });
 
-app.get("/users/purchasedCourses",(req,res)=>{
+app.get("/users/purchasedCourses", userauthenticator, (req, res) => {
     let { username, password } = req.headers;
-    let isPresent = user.some(user => user.username === username && user.password==password);
-    if (isPresent) {
-        let foundUser = user.find(user => user.username === username && user.password === password);
-        let courses = foundUser.courses;
-        // console.log(courses);
-        res.send(courses);
-    } else {
-        res.send("invalid credentials")
-    }
+    let foundUser = user.find(user => user.username === username && user.password === password);
+    let courses = foundUser.courses;
+    res.send(courses);
+
 });
-
-
 
 app.listen(3000, () => {
     console.log("App is running at port 3000");
