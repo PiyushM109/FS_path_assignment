@@ -1,0 +1,15 @@
+{
+  "name": "03-course-app-medium",
+  "version": "1.0.0",
+  "description": "Functionally the same as 02-course-app-easy. Routes are the same as well.\r But now you need to store data in files vs in memory.\r Create separate files for each entity (admin, user, course, purchase).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
