@@ -1,36 +1,51 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css'
 
 function App() {
-  const [todo, setTodo] = useState({
-    title : "go to gym2",
-    description : "go to gym 112",
-    id : 1
-  })
+  const [todos, setTodos] = React.useState([{
+    title: "go to gym1",
+    description: "hit the gym 112",
+    id: 1
+  },
+  {
+    title: "go to gym2",
+    description: "hit the gym ",
+    id: 1
+  }]);
 
-  setInterval(()=>{
-    setTodo({
-      title : "go to park",
-      description : "go to hotel",
-      id : 1
-    })
-  },2000)
+  React.useEffect(() => {
+
+    fetch("http://localhost:3000/todos", { method: "GET" }).then((response) => {
+      response.json().then((data) => {
+        setTodos(data);
+        console.log(data);
+      })
+    });
+  }, [])
+
   return (
     <div>
-    <h1>Piyush More</h1>
-    {todo.title}
-    {todo.description}
-    {todo.id}
-    <PersonName firstName ={todo.title} lastName={"More"}></PersonName>
+      {todos.map((todo) => {
+        return <div>
+          {todo.title}
+          {todo.description}
+          <button>Delete</button>
+          <br />
+          </div>
+      })}
     </div>
   )
 }
 
-function PersonName(props){
+function Todo(props) {
   return <div>
-    {props.firstName}{props.lastName}
+    {props.title}
+    {props.description}
+
+    {/* <button onClick={()=>{
+
+    }}>Hii there</button> */}
   </div>
 }
-
 export default App

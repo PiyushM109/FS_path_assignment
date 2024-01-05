@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Mern Stack",
+    "completed": false,
+    "description": "assignments"
+  },
+  {
+    "id": 2,
+    "title": "ML Project",
+    "completed": false,
+    "description": "Write report for the ML  project"
+  },
+  {
+    "id": 1,
+    "title": "got to gym",
+    "completed": false,
+    "description": "Leg day"
+  },
+  {
+    "id": 2,
+    "title": "got to gym123",
+    "completed": false,
+    "description": "Leg day yes"
+  }
+]
