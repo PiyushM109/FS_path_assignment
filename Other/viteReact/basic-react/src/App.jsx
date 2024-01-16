@@ -1,14 +1,12 @@
 import "./App.css"
 import ProductList from "./ProductList";
 
-
-
-function Description() {
-  return <h4>This is description from Description component</h4>
-}
 function App() {
   return (
-  <ProductList />
+    <div>
+      <h2>Blockbuster Deals | Shop Now</h2>
+      <ProductList />
+    </div>
   );
 }
 
