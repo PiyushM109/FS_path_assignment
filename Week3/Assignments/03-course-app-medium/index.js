@@ -2,8 +2,10 @@ const express = require('express');
 const jwt = require("jsonwebtoken")
 const app = express();
 const fs = require('fs').promises;
+const cors = require('cors');
 
 app.use(express.json());
+app.use(cors());
 const secretKey = "secret_key"
 
 
@@ -48,12 +50,22 @@ const authenticateJwt = (req, res, next) => {
   }
 }
 
+app.get("/admin/me",authenticateJwt,(req,res)=>{
+  res.json({
+    username : req.user.username
+  })
+})
+
 // Admin routes
 app.post('/admin/signup', async (req, res) => {
   const { username, password } = req.body
-  const adminAlreadyExist = ADMINS.find(admin => admin.username === username)
-  if (adminAlreadyExist && username == "") {
-    res.status(403).json({ message: 'Admin already exists' })
+  if(username=="" || password=="" || username===undefined){
+    res.status(403).json({message:"username and password required"});
+    return;
+  }
+  const adminAlreadyExist = ADMINS.find(admin => admin.username === username && admin.password===password)
+  if (adminAlreadyExist || username == "") {
+    res.status(409).json({ message: 'Admin already exists' })
   } else {
     const admin = { username: username, password: password }
     ADMINS.push(admin);
@@ -73,8 +85,7 @@ app.post('/admin/signup', async (req, res) => {
 });
 
 app.post('/admin/login', (req, res) => {
-  const { username, password } = req.headers
-  console.log(ADMINS)
+  const { username, password } = req.body;
   console.log(username + " " + password);
   let admin = ADMINS.find(admin => admin.username == username && admin.password == password)
   console.log(admin);

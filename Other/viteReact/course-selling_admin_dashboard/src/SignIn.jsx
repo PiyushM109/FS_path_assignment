@@ -4,25 +4,51 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 
 function SignIn() {
-    let [email,setEmail] = useState();
-    let [pass,setPass] = useState();
-    
-    let updateEmail=(event)=>{
-        setEmail(event.target.value);
-    }
-    let updatePass=(event)=>{
-        setPass(event.target.value);
-    }
+  let [email, setEmail] = useState();
+  let [pass, setPass] = useState();
 
-    let signIn = ()=>{
-        let currEmail = email;
-        let currPass = pass;
-        setEmail("");
-        setPass("");
-        console.log(currEmail);
-        console.log(currPass);
-    }
-    
+  let updateEmail = (event) => {
+    setEmail(event.target.value);
+  };
+  let updatePass = (event) => {
+    setPass(event.target.value);
+  };
+
+  let signIn = () => {
+    let currEmail = email;
+    let currPass = pass;
+    setEmail("");
+    setPass("");
+    const url = "http://localhost:3000/admin/login";
+
+    const data = {
+      username: currEmail,
+      password: currPass,
+    };
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", 
+        
+      },
+      body: JSON.stringify(data), 
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json(); 
+      })
+      .then((responseData) => {
+        console.log("Response:", responseData);
+        localStorage.setItem('token', responseData.token);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   return (
     <div>
       <div
@@ -60,15 +86,12 @@ function SignIn() {
               value={pass}
               variant="outlined"
               onChange={updatePass}
-              
             />
           </div>
           <br />
           <br />
           <div>
-            <Button size="large" variant="contained"
-                onClick={signIn}
-            >
+            <Button size="large" variant="contained" onClick={signIn}>
               SignIn
             </Button>
           </div>
