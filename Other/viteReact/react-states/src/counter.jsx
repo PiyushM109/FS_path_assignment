@@ -3,8 +3,7 @@ import { useState } from "react";
 export default function Counter() {
     let [count, setCount] = useState(0);
     let incCount = () => {
-        count++;
-        setCount(count);
+        setCount(currCount => currCount+1);
     }
     return (
         <div>
