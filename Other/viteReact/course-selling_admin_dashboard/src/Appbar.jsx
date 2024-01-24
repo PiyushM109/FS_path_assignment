@@ -7,10 +7,14 @@ function Appbar() {
   let navigate = useNavigate();
   const [userEmail, setUserEmail] = useState(null);
   
+  
 
   useEffect(()=>{
     function callback2(data){
-        console.log(data);
+      if(data.username){
+        setUserEmail(data.username);
+       
+      }    
     }
     function callback1(res){
         res.json().then(callback2)
@@ -21,7 +25,28 @@ function Appbar() {
             "Authorization" : "Bearer "+localStorage.getItem("token")
         }
     }).then(callback1)
-  },[])
+  },[]);
+  if(userEmail){
+    return (
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>
+          <Typography variant="h5">PathShala📚</Typography>
+        </div>
+        <div>
+          <span>{userEmail}</span>
+          <Button
+            variant="contained"
+            onClick={() => {
+              localStorage.setItem("token",null);
+              window.location = "/signin"
+            }}
+          >
+            Logout
+          </Button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <div>

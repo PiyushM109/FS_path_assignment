@@ -3,6 +3,8 @@ import SignUp from "./SignUp";
 import Appbar from "./Appbar";
 import SignIn from "./SignIn";
 import DashBoard from "./DashBoard";
+import AddCourse from "./AddCourse";
+import MyCourses from "./MyCourses";
 
 function App() {
   return (
@@ -11,7 +13,9 @@ function App() {
         <Appbar />
 
         <Routes>
+          <Route path="/Courses" element={<MyCourses />} />
           <Route path="/dashboard" element={<DashBoard />} />
+          <Route path="/addCourse" element={<AddCourse />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
         </Routes>

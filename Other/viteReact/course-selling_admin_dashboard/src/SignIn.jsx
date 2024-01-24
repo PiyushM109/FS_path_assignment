@@ -1,9 +1,11 @@
 import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router";
 import { useState } from "react";
 
 function SignIn() {
+  let navigate = useNavigate();
   let [email, setEmail] = useState();
   let [pass, setPass] = useState();
 
@@ -43,6 +45,7 @@ function SignIn() {
       .then((responseData) => {
         console.log("Response:", responseData);
         localStorage.setItem('token', responseData.token);
+        window.location = "/courses"
       })
       .catch((error) => {
         console.error("Error:", error);
