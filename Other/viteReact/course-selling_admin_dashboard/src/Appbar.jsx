@@ -6,27 +6,24 @@ import { useEffect, useState } from "react";
 function Appbar() {
   let navigate = useNavigate();
   const [userEmail, setUserEmail] = useState(null);
-  
-  
 
-  useEffect(()=>{
-    function callback2(data){
-      if(data.username){
+  useEffect(() => {
+    function callback2(data) {
+      if (data.username) {
         setUserEmail(data.username);
-       
-      }    
+      }
     }
-    function callback1(res){
-        res.json().then(callback2)
+    function callback1(res) {
+      res.json().then(callback2);
     }
-    fetch("http://localhost:3000/admin/me",{
-        method:"GET",
-        headers:{
-            "Authorization" : "Bearer "+localStorage.getItem("token")
-        }
-    }).then(callback1)
-  },[]);
-  if(userEmail){
+    fetch("http://localhost:3000/admin/me", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    }).then(callback1);
+  }, []);
+  if (userEmail) {
     return (
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div>
@@ -37,8 +34,8 @@ function Appbar() {
           <Button
             variant="contained"
             onClick={() => {
-              localStorage.setItem("token",null);
-              window.location = "/signin"
+              localStorage.setItem("token", null);
+              window.location = "/signin";
             }}
           >
             Logout

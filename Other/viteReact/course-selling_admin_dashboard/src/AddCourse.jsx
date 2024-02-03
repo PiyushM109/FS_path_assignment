@@ -2,7 +2,10 @@ import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import { useNavigate } from "react-router";
+
 function AddCourse() {
+  let navigate = useNavigate();
   let [courseData, setCourseData] = new useState({
     title: "",
     desc: "",
@@ -15,7 +18,7 @@ function AddCourse() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization" : "Bearer "+localStorage.getItem("token")
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
       body: JSON.stringify(courseData),
     })
@@ -27,6 +30,7 @@ function AddCourse() {
       })
       .then((responseData) => {
         console.log("Response:", responseData);
+        navigate("/Courses");
       })
       .catch((error) => {
         console.error("Error:", error);

@@ -5,6 +5,7 @@ import SignIn from "./SignIn";
 import DashBoard from "./DashBoard";
 import AddCourse from "./AddCourse";
 import MyCourses from "./MyCourses";
+import Course from "./Course";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
 
         <Routes>
           <Route path="/Courses" element={<MyCourses />} />
+          <Route path="/Course/:courseId" element={<Course />} />
           <Route path="/dashboard" element={<DashBoard />} />
           <Route path="/addCourse" element={<AddCourse />} />
           <Route path="/signin" element={<SignIn />} />
