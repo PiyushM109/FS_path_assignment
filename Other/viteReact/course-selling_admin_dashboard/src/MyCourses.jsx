@@ -42,6 +42,7 @@ export default function MyCourses() {
               <CardMedia
                 component="img"
                 height="140"
+                width="200"
                 image={course.image}
                 alt="course thumbnail"
               />

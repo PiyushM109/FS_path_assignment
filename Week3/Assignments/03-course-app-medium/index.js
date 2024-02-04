@@ -97,7 +97,7 @@ app.post('/admin/login', (req, res) => {
   }
 });
 
-app.post('/admin/courses', authenticateJwt, (req, res) => {
+app.post('/admin/courses', authenticateJwt, async(req, res) => {
   const course = req.body
   console.log(course);
   console.log(COURSES);
@@ -108,12 +108,12 @@ app.post('/admin/courses', authenticateJwt, (req, res) => {
   } else {
     course.id = COURSES.length + 1;
     COURSES.push(course)
-    fs.writeFile('courses.json', JSON.stringify(COURSES),'utf8');
-    res.json({ message: 'Course created successfully', course: course.id })
+    await fs.writeFile('courses.json', JSON.stringify(COURSES), 'utf8');
+    res.json({ message: 'Course created successfully', course: course.id });
   }
 });
 
-app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
+app.put('/admin/courses/:courseId', authenticateJwt, async (req, res) => {
   const { title, desc, price, image, published } = req.body
   const id = parseInt(req.params.courseId)
   
@@ -124,15 +124,14 @@ app.put('/admin/courses/:courseId', authenticateJwt, (req, res) => {
     course.price = price
     course.image = image
     course.published = published
-    fs.writeFileSync('courses.json', JSON.stringify(COURSES));
-    res.json({ message: 'Course updated successfully' })
+    await fs.writeFile('courses.json', JSON.stringify(COURSES), 'utf8');
+  res.json({ message: 'Course updated successfully' });
   } else {
     res.status(404).json({ message: 'Course not found' })
   }
 });
 
 app.get('/admin/courses', authenticateJwt, (req, res) => {
-  console.log(COURSES)
   res.json({ courses: COURSES })
 });
 

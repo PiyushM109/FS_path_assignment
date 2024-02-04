@@ -8,7 +8,7 @@ import { CardActionArea } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-function Course() {
+function UpdateCourse() {
   let { courseId } = useParams();
   const [courses, setCourses] = useState([]);
 
@@ -200,4 +200,5 @@ function CourseCard(props) {
   );
 }
 
-export default Course;
+export default UpdateCourse;
+
